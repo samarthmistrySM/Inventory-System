@@ -2,12 +2,31 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
+    public float moveSpeed = 5f;
+    public float turnSpeed = 200f;
 
+    private Rigidbody rb;
+    private float moveInput;
+    private float turnInput;
 
-    // Update is called once per frame
+    void Start()
+    {
+        rb = GetComponent<Rigidbody>();
+    }
+
     void Update()
     {
-        Vector3 move = new Vector3(0, 0, 0);
-        Debug.Log(move.x);
+        moveInput = Input.GetAxis("Vertical");
+        turnInput = Input.GetAxis("Horizontal");
+    }
+
+    void FixedUpdate()
+    {
+        Vector3 move = transform.forward * moveInput * moveSpeed * Time.fixedDeltaTime;
+        rb.MovePosition(rb.position + move);
+
+        float turn = turnInput * turnSpeed * Time.fixedDeltaTime;
+        transform.Rotate(0f, turn, 0f);
+        rb.MoveRotation(transform.rotation);
     }
 }
