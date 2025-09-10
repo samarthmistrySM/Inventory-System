@@ -14,8 +14,8 @@
 
 1. **Inventory Grid (UI)**
 
-   - [ ] Build a simple grid layout in Unity UI
-   - [ ] Create a slot prefab (bg image + item icon + quantity text)
+   - [x] Build a simple grid layout in Unity UI
+   - [x] Create a slot prefab (bg image + item icon + quantity text)
    - [ ] Items should be draggable between slots
 
 2. **Stacking & Slot Logic**
