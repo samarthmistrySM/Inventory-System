@@ -15,8 +15,8 @@
 
 1. **Stacking & Slot Logic**
 
-   - [ ] Same items should stack together
-   - [ ] Don’t go over the item’s `maxStack`
+   - [x] Same items should stack together
+   - [x] Don’t go over the item’s `maxStack`
    - [ ] If stack is full → put item in a new slot
 
 2. **Interactable Objects**

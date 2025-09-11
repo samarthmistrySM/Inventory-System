@@ -14,7 +14,7 @@ public class InventoryManager : MonoBehaviour
     {
         if (testItems != null && testQuantities != null)
         {
-            int count = Mathf.Min(testItems.Length, testQuantities.Length);
+            int count = testItems.Length;
             for (int i = 0; i < count; i++)
             {
                 if (testItems[i] != null)
@@ -41,13 +41,29 @@ public class InventoryManager : MonoBehaviour
 
     public void AddItem(Item item, int quantity)
     {
+        int remaining = quantity;
+
         for (int i = 0; i < itemSlots.Length; i++)
         {
-            if (itemSlots[i].isFull == false)
+            if (itemSlots[i].item != item && item.isStackable && !itemSlots[i].isFull)
             {
-                itemSlots[i].AddItem(item, quantity);
-                return;
+                remaining = itemSlots[i].AddItem(item, remaining);
+                if (remaining <= 0) return;
             }
+        }
+
+        for (int i = 0; i < itemSlots.Length; i++)
+        {
+            if (itemSlots[i].item == null)
+            {
+                remaining = itemSlots[i].AddItem(item, remaining);
+                if (remaining <= 0) return;
+            }
+        }
+
+        if (remaining > 0)
+        {
+            Debug.Log("Inventory si full Item: " + item.itemName + " with remaining quantity: " + remaining + " coundnt added!");
         }
     }
 }
