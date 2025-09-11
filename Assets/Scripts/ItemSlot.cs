@@ -41,7 +41,6 @@ public class ItemSlot : MonoBehaviour,
     {
         if (_item == null || _quantity <= 0) return _quantity;
 
-        // Empty slot -> create new stack
         if (item == null)
         {
             item = _item;
@@ -51,7 +50,6 @@ public class ItemSlot : MonoBehaviour,
             return _quantity - quantity;
         }
 
-        // Same item & stackable -> stack
         if (item == _item && item.isStackable)
         {
             int spaceLeft = item.maxStack - quantity;
@@ -62,11 +60,9 @@ public class ItemSlot : MonoBehaviour,
             return _quantity - toAdd;
         }
 
-        // Can't add to this slot
         return _quantity;
     }
 
-    // Refresh visuals
     public void UpdateUI()
     {
         if (item != null)

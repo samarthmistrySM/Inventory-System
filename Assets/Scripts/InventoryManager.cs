@@ -45,7 +45,7 @@ public class InventoryManager : MonoBehaviour
 
         for (int i = 0; i < itemSlots.Length; i++)
         {
-            if (itemSlots[i].item != item && item.isStackable && !itemSlots[i].isFull)
+            if (itemSlots[i].item == item && item.isStackable && !itemSlots[i].isFull)
             {
                 remaining = itemSlots[i].AddItem(item, remaining);
                 if (remaining <= 0) return;
