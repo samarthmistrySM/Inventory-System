@@ -6,6 +6,25 @@ public class InventoryManager : MonoBehaviour
     private bool menuActivated;
     public ItemSlot[] itemSlots;
 
+    [Header("Testing Inventory")]
+    public Item[] testItems;
+    public int[] testQuantities;
+
+    void Start()
+    {
+        if (testItems != null && testQuantities != null)
+        {
+            int count = Mathf.Min(testItems.Length, testQuantities.Length);
+            for (int i = 0; i < count; i++)
+            {
+                if (testItems[i] != null)
+                {
+                    AddItem(testItems[i], testQuantities[i]);
+                }
+            }
+        }
+    }
+
     void Update()
     {
         if (Input.GetButtonDown("Inventory") && menuActivated)

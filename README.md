@@ -46,4 +46,3 @@
    - [ ] Save inventory data (JSON or something simple)
    - [ ] Save player’s inventory + chests + shop on exit
    - [ ] Load it again when the game starts
-
