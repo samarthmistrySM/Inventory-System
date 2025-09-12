@@ -2,7 +2,9 @@ using UnityEngine;
 
 public class InventoryManager : MonoBehaviour
 {
-    public GameObject InventoryMenu;
+    [SerializeField] private GameObject InventoryMenu;
+    [SerializeField] private GameObject DescriptionContainer;
+    [SerializeField] private GameObject ChestContainer;
     private bool menuActivated;
     public ItemSlot[] itemSlots;
 
@@ -30,13 +32,23 @@ public class InventoryManager : MonoBehaviour
         if (Input.GetButtonDown("Inventory") && menuActivated)
         {
             InventoryMenu.SetActive(false);
+            ChestContainer.SetActive(false);
             menuActivated = false;
+            DescriptionContainer.SetActive(false);
         }
         else if (Input.GetButtonDown("Inventory") && !menuActivated)
         {
             InventoryMenu.SetActive(true);
+            ChestContainer.SetActive(false);
             menuActivated = true;
+            DescriptionContainer.SetActive(true);
         }
+    }
+
+    public void OpenInventory()
+    {
+        InventoryMenu.SetActive(true);
+        menuActivated = true;
     }
 
     public void AddItem(Item item, int quantity)

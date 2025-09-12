@@ -12,15 +12,21 @@ public class ItemSlot : MonoBehaviour,
     IDragHandler,
     IDropHandler
 {
+    [Header("Item Info")]
     public Item item;
     public int quantity;
     public bool isFull;
 
-    [SerializeField]
-    private TMP_Text quantityText;
-    [SerializeField]
-    private Image itemImage;
+    [Header("Item Ui Info")]
+    [SerializeField] private TMP_Text quantityText;
+    [SerializeField] private Image itemImage;
 
+    [Header("Description Section")]
+    [SerializeField] private Image itemDescriptionImg;
+    [SerializeField] private TMP_Text itemDescriptionName;
+    [SerializeField] private TMP_Text itemDescriptionCategory;
+
+    [Header("Selection Section")]
     public GameObject selectedItem;
     public bool isSlotSelected;
 
@@ -110,7 +116,11 @@ public class ItemSlot : MonoBehaviour,
     public void OnPointerEnter(PointerEventData eventData)
     {
         selectedItem.SetActive(true);
+        itemImage.raycastTarget = false;
         isSlotSelected = true;
+        itemDescriptionImg.sprite = item.icon;
+        itemDescriptionName.text = item.itemName;
+        itemDescriptionCategory.text = item.category.ToString();
     }
 
     public void OnPointerExit(PointerEventData eventData)
