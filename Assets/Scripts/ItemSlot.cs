@@ -118,6 +118,9 @@ public class ItemSlot : MonoBehaviour,
         selectedItem.SetActive(true);
         itemImage.raycastTarget = false;
         isSlotSelected = true;
+
+        if (item == null) return;
+
         itemDescriptionImg.sprite = item.icon;
         itemDescriptionName.text = item.itemName;
         itemDescriptionCategory.text = item.category.ToString();
