@@ -21,21 +21,13 @@ public class ItemSlot : MonoBehaviour,
     [SerializeField] private TMP_Text quantityText;
     [SerializeField] private Image itemImage;
 
-    [Header("Description Section")]
-    [SerializeField] private Image itemDescriptionImg;
-    [SerializeField] private TMP_Text itemDescriptionName;
-    [SerializeField] private TMP_Text itemDescriptionCategory;
-
     [Header("Selection Section")]
     public GameObject selectedItem;
     public bool isSlotSelected;
 
     private Canvas canvas;
-    private CanvasGroup canvasGroup;
-
     private GameObject draggedIcon;
     private RectTransform draggedRect;
-
     private bool isDragging;
 
     void Awake()
@@ -115,64 +107,57 @@ public class ItemSlot : MonoBehaviour,
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        selectedItem.SetActive(true);
-        itemImage.raycastTarget = false;
+        if (selectedItem != null)
+            selectedItem.SetActive(true);
+
         isSlotSelected = true;
 
-        if (item == null) return;
-
-        itemDescriptionImg.sprite = item.icon;
-        itemDescriptionName.text = item.itemName;
-        itemDescriptionCategory.text = item.category.ToString();
+        InventoryManager.Instance.ShowDescription(item);
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        if (selectedItem) selectedItem.SetActive(false);
+        if (selectedItem != null)
+            selectedItem.SetActive(false);
+
         isSlotSelected = false;
+
+        InventoryManager.Instance.ShowDescription(null);
     }
 
     public void OnPointerDown(PointerEventData eventData)
     {
-        if (eventData.button == PointerEventData.InputButton.Left && item != null)
-        {
-            isDragging = true;
+        if (eventData.button != PointerEventData.InputButton.Left || item == null) return;
 
-            eventData.pointerDrag = gameObject;
+        isDragging = true;
+        eventData.pointerDrag = gameObject;
 
-            draggedIcon = new GameObject("DraggedIcon");
-            draggedIcon.transform.SetParent(canvas.transform, false);
-            draggedIcon.transform.SetAsLastSibling();
+        draggedIcon = new GameObject("DraggedIcon");
+        draggedIcon.transform.SetParent(canvas.transform, false);
+        draggedIcon.transform.SetAsLastSibling();
 
-            Image img = draggedIcon.AddComponent<Image>();
-            img.sprite = item.icon;
-            img.raycastTarget = false;
+        Image img = draggedIcon.AddComponent<Image>();
+        img.sprite = item.icon;
+        img.raycastTarget = false;
 
-            draggedRect = draggedIcon.GetComponent<RectTransform>();
-            draggedRect.sizeDelta = new Vector2(100, 100);
-            draggedRect.position = eventData.position;
-        }
+        draggedRect = draggedIcon.GetComponent<RectTransform>();
+        draggedRect.sizeDelta = new Vector2(100, 100);
+        draggedRect.position = eventData.position;
     }
 
     public void OnDrag(PointerEventData eventData)
     {
         if (isDragging && draggedRect != null)
-        {
             draggedRect.position = eventData.position;
-        }
     }
 
     public void OnPointerUp(PointerEventData eventData)
     {
-        if (isDragging && eventData.button == PointerEventData.InputButton.Left)
-        {
-            isDragging = false;
+        if (!isDragging || eventData.button != PointerEventData.InputButton.Left) return;
 
-            if (draggedIcon != null)
-            {
-                Destroy(draggedIcon);
-            }
-        }
+        isDragging = false;
+        if (draggedIcon != null)
+            Destroy(draggedIcon);
     }
 
     public void OnDrop(PointerEventData eventData)
@@ -181,29 +166,24 @@ public class ItemSlot : MonoBehaviour,
 
         ItemSlot draggedSlot = eventData.pointerDrag.GetComponent<ItemSlot>();
         if (draggedSlot != null && draggedSlot != this)
-        {
             SwapItems(draggedSlot);
-        }
     }
 
     private void SwapItems(ItemSlot other)
     {
         if (item != null && other.item != null && item == other.item && item.isStackable)
         {
-            int availableSpace = item.maxStack - quantity;
-            if (availableSpace > 0)
+            int space = item.maxStack - quantity;
+            if (space > 0)
             {
-                int amountToTransfer = Mathf.Min(availableSpace, other.quantity);
-
-                quantity += amountToTransfer;
-                other.quantity -= amountToTransfer;
+                int transfer = Mathf.Min(space, other.quantity);
+                quantity += transfer;
+                other.quantity -= transfer;
 
                 isFull = (quantity >= item.maxStack);
+                other.isFull = (other.quantity >= other.item.maxStack);
 
-                if (other.quantity <= 0)
-                    other.ClearSlot();
-                else
-                    other.isFull = (other.quantity >= other.item.maxStack);
+                if (other.quantity <= 0) other.ClearSlot();
 
                 UpdateUI();
                 other.UpdateUI();
@@ -212,19 +192,18 @@ public class ItemSlot : MonoBehaviour,
         }
 
         Item oldItem = item;
-        int oldQuantity = quantity;
-        bool oldIsFull = isFull;
+        int oldQty = quantity;
+        bool oldFull = isFull;
 
         item = other.item;
         quantity = other.quantity;
         isFull = other.isFull;
 
         other.item = oldItem;
-        other.quantity = oldQuantity;
-        other.isFull = oldIsFull;
+        other.quantity = oldQty;
+        other.isFull = oldFull;
 
         UpdateUI();
         other.UpdateUI();
     }
-
 }

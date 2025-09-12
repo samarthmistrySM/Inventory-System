@@ -1,30 +1,53 @@
 using UnityEngine;
+using TMPro;
+using UnityEngine.UI;
+using System.Collections;
 
 public class InventoryManager : MonoBehaviour
 {
-    [SerializeField] private GameObject InventoryMenu;
-    [SerializeField] private GameObject DescriptionContainer;
-    [SerializeField] private GameObject ChestContainer;
-    private bool menuActivated;
-    public ItemSlot[] itemSlots;
+    public static InventoryManager Instance;
 
-    [Header("Testing Inventory")]
+    [Header("UI Panels")]
+    [SerializeField] private GameObject InventoryMenu;
+    [SerializeField] private GameObject ChestContainer;
+    [SerializeField] private GameObject DescriptionContainer;
+
+    [Header("Description UI")]
+    [SerializeField] private Image descriptionImg;
+    [SerializeField] private TMP_Text descriptionName;
+    [SerializeField] private TMP_Text descriptionCategory;
+
+    [Header("Slots")]
+    public ItemSlot[] itemSlots;
+    public ItemSlot[] chestSlots;
+
+    [Header("Testing")]
     public Item[] testItems;
     public int[] testQuantities;
+
+    private bool menuActivated;
+    private bool chestActivated;
+
+    void Awake()
+    {
+        Instance = this;
+    }
 
     void Start()
     {
         if (testItems != null && testQuantities != null)
         {
-            int count = testItems.Length;
-            for (int i = 0; i < count; i++)
-            {
+            for (int i = 0; i < testItems.Length; i++)
                 if (testItems[i] != null)
-                {
-                    AddItem(testItems[i], testQuantities[i]);
-                }
-            }
+                    AddItemToInventory(testItems[i], testQuantities[i]);
         }
+    }
+    public void OpenInventory()
+    {
+        InventoryMenu.SetActive(true);
+        ChestContainer.SetActive(true);
+        menuActivated = true;
+        chestActivated = true;
     }
 
     void Update()
@@ -33,49 +56,55 @@ public class InventoryManager : MonoBehaviour
         {
             InventoryMenu.SetActive(false);
             ChestContainer.SetActive(false);
-            menuActivated = false;
             DescriptionContainer.SetActive(false);
+            menuActivated = false;
         }
-        else if (Input.GetButtonDown("Inventory") && !menuActivated)
+        else if (Input.GetButtonDown("Inventory"))
         {
             InventoryMenu.SetActive(true);
+            DescriptionContainer.SetActive(true);
             ChestContainer.SetActive(false);
             menuActivated = true;
-            DescriptionContainer.SetActive(true);
         }
     }
 
-    public void OpenInventory()
+    public void ShowDescription(Item item)
     {
-        InventoryMenu.SetActive(true);
-        menuActivated = true;
+        if (item == null || chestActivated)
+        {
+            DescriptionContainer.SetActive(false);
+            return;
+        }
+
+        ChestContainer.SetActive(false);
+        DescriptionContainer.SetActive(true);
+        descriptionImg.sprite = item.icon;
+        descriptionName.text = item.itemName;
+        descriptionCategory.text = item.category.ToString();
     }
 
-    public void AddItem(Item item, int quantity)
+    public void AddItemToInventory(Item item, int quantity)
     {
         int remaining = quantity;
 
         for (int i = 0; i < itemSlots.Length; i++)
         {
             if (itemSlots[i].item == item && item.isStackable && !itemSlots[i].isFull)
-            {
                 remaining = itemSlots[i].AddItem(item, remaining);
-                if (remaining <= 0) return;
-            }
+
+
+            if (remaining <= 0) return;
         }
 
         for (int i = 0; i < itemSlots.Length; i++)
         {
             if (itemSlots[i].item == null)
-            {
                 remaining = itemSlots[i].AddItem(item, remaining);
-                if (remaining <= 0) return;
-            }
+
+            if (remaining <= 0) return;
         }
 
         if (remaining > 0)
-        {
-            Debug.Log("Inventory si full Item: " + item.itemName + " with remaining quantity: " + remaining + " coundnt added!");
-        }
+            Debug.Log("Inventory full: " + item.itemName + " (remaining: " + remaining + ")");
     }
 }

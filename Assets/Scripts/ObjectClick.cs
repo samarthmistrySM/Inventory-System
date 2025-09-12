@@ -10,7 +10,6 @@ public class ObjectClick : MonoBehaviour
         if (toOpenUi != null)
         {
             toOpenUi.SetActive(true);
-            Debug.Log("Activated");
             inventoryManager.OpenInventory();
         }
     }

@@ -16,7 +16,7 @@
 
 1. **Interactable Objects**
 
-   - [ ] Chest → open chest inventory
+   - [x] Chest → open chest inventory
    - [ ] Shop → open shop inventory & currency system
    - [ ] Crafting Bench → open crafting UI
 
