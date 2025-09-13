@@ -18,8 +18,8 @@
 
 1. **Equipment System**
 
-   - [ ] Add equipment slots (head, body, weapon, shield, etc.)
-   - [ ] Items should be draggable into equipment slots
+   - [x] Add equipment slots (head, body, weapon, shield, etc.)
+   - [ x Items should be draggable into equipment slots
    - [ ] Equipped items should apply stats (damage, defense, buffs, etc.)
 
 2. **Save / Load (optional)**
