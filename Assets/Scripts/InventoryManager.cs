@@ -11,6 +11,7 @@ public class InventoryManager : MonoBehaviour
     [SerializeField] private GameObject InventoryMenu;
     [SerializeField] private GameObject ChestContainer;
     [SerializeField] private GameObject DescriptionContainer;
+    [SerializeField] private GameObject ShopContainer;
 
     [Header("Description UI")]
     [SerializeField] private Image descriptionImg;
@@ -27,6 +28,7 @@ public class InventoryManager : MonoBehaviour
 
     private bool menuActivated;
     private bool chestActivated;
+    private bool shopActivated;
 
     void Awake()
     {
@@ -42,12 +44,21 @@ public class InventoryManager : MonoBehaviour
                     AddItemToInventory(testItems[i], testQuantities[i]);
         }
     }
-    public void OpenInventory()
+    public void OpenInventory(string toOpenUiName)
     {
         InventoryMenu.SetActive(true);
-        ChestContainer.SetActive(true);
         menuActivated = true;
-        chestActivated = true;
+
+        if (toOpenUiName.Equals("Chest"))
+        {
+            ChestContainer.SetActive(true);
+            chestActivated = true;
+        }
+        else
+        {
+            ShopContainer.SetActive(true);
+            shopActivated = true;
+        }
     }
 
     void Update()
@@ -58,25 +69,29 @@ public class InventoryManager : MonoBehaviour
             ChestContainer.SetActive(false);
             DescriptionContainer.SetActive(false);
             menuActivated = false;
+            chestActivated = false;
+            shopActivated = false;
         }
         else if (Input.GetButtonDown("Inventory"))
         {
             InventoryMenu.SetActive(true);
             DescriptionContainer.SetActive(true);
             ChestContainer.SetActive(false);
+            ShopContainer.SetActive(false);
             menuActivated = true;
         }
     }
 
     public void ShowDescription(Item item)
     {
-        if (item == null || chestActivated)
+        if (item == null || chestActivated || shopActivated)
         {
             DescriptionContainer.SetActive(false);
             return;
         }
 
         ChestContainer.SetActive(false);
+        ShopContainer.SetActive(false);
         DescriptionContainer.SetActive(true);
         descriptionImg.sprite = item.icon;
         descriptionName.text = item.itemName;

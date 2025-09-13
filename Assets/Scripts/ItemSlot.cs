@@ -17,6 +17,15 @@ public class ItemSlot : MonoBehaviour,
     public int quantity;
     public bool isFull;
 
+    public enum SlotType
+    {
+        Inventory,
+        Chest,
+        Shop
+    }
+
+    public SlotType slotType;
+
     [Header("Item Ui Info")]
     [SerializeField] private TMP_Text quantityText;
     [SerializeField] private Image itemImage;
@@ -165,9 +174,24 @@ public class ItemSlot : MonoBehaviour,
         if (eventData.pointerDrag == null) return;
 
         ItemSlot draggedSlot = eventData.pointerDrag.GetComponent<ItemSlot>();
-        if (draggedSlot != null && draggedSlot != this)
-            SwapItems(draggedSlot);
+        if (draggedSlot == null || draggedSlot == this) return;
+
+        if (draggedSlot.slotType == SlotType.Shop && slotType == SlotType.Inventory)
+        {
+            if (ShopManager.Instance != null)
+            {
+                ShopManager.Instance.BuyItem(draggedSlot);
+            }
+            else
+            {
+                Debug.LogWarning("No ShopManager in scene!");
+            }
+            return;
+        }
+
+        SwapItems(draggedSlot);
     }
+
 
     private void SwapItems(ItemSlot other)
     {
