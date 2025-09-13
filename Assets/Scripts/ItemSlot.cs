@@ -21,7 +21,9 @@ public class ItemSlot : MonoBehaviour,
     {
         Inventory,
         Chest,
-        Shop
+        Shop,
+        CraftingIngregient,
+        CraftingOutput
     }
 
     public SlotType slotType;

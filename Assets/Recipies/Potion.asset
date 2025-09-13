@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 592cc63d49c7b4ee5a4f7f04fe6dcead, type: 3}
+  m_Name: Potion
+  m_EditorClassIdentifier: Assembly-CSharp::CraftingRecipe
+  inputs:
+  - {fileID: 11400000, guid: 21d63dc943f294d058a0547305399bb1, type: 2}
+  - {fileID: 11400000, guid: a04e788c07c294573bf0d63c4c150a97, type: 2}
+  - {fileID: 0}
+  resultItem: {fileID: 11400000, guid: b70591a81a7d149438417fd85b01947a, type: 2}
+  resultQuantity: 16

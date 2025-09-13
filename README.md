@@ -18,7 +18,7 @@
 1. **Crafting System**
 
    - [ ] Make recipes as ScriptableObjects
-   - [ ] Add crafting slots in the UI
+   - [x] Add crafting slots in the UI
    - [ ] Drag items into slots → if they match recipe → output result item
 
 2. **Equipment System**
