@@ -382,5 +382,8 @@ MonoBehaviour:
   isFull: 0
   quantityText: {fileID: 6061211579037338505}
   itemImage: {fileID: 6115934075392538481}
+  itemDescriptionImg: {fileID: 0}
+  itemDescriptionName: {fileID: 0}
+  itemDescriptionCategory: {fileID: 0}
   selectedItem: {fileID: 4951616392384939066}
   isSlotSelected: 0
