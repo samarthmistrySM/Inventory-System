@@ -37,7 +37,7 @@ public class ShopManager : MonoBehaviour
 
         for (int i = 0; i < items.Length; i++)
         {
-            shopSlots[i].AddItem(items[i], 64);
+            shopSlots[i].AddItem(items[i], items[i].maxStack);
         }
     }
 
@@ -48,7 +48,7 @@ public class ShopManager : MonoBehaviour
         if (playerCurrency >= fixedPrice)
         {
             playerCurrency -= fixedPrice;
-            InventoryManager.Instance.AddItemToInventory(shopSlot.item, 64);
+            InventoryManager.Instance.AddItemToInventory(shopSlot.item, shopSlot.item.maxStack);
 
             UpdateCurrencyUI();
             Debug.Log("Bought " + shopSlot.item.itemName + " for " + fixedPrice);

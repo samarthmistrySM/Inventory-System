@@ -12,6 +12,7 @@ public class InventoryManager : MonoBehaviour
     [SerializeField] private GameObject ChestContainer;
     [SerializeField] private GameObject DescriptionContainer;
     [SerializeField] private GameObject ShopContainer;
+    [SerializeField] private GameObject CraftingContainer;
 
     [Header("Description UI")]
     [SerializeField] private Image descriptionImg;
@@ -25,10 +26,10 @@ public class InventoryManager : MonoBehaviour
     [Header("Testing")]
     public Item[] testItems;
     public int[] testQuantities;
-
     private bool menuActivated;
     private bool chestActivated;
     private bool shopActivated;
+    private bool craftingActivated;
 
     void Awake()
     {
@@ -49,15 +50,27 @@ public class InventoryManager : MonoBehaviour
         InventoryMenu.SetActive(true);
         menuActivated = true;
 
-        if (toOpenUiName.Equals("Chest"))
-        {
-            ChestContainer.SetActive(true);
-            chestActivated = true;
-        }
-        else
+        ShopContainer.SetActive(false);
+        shopActivated = false; ;
+        CraftingContainer.SetActive(false);
+        craftingActivated = false;
+        ChestContainer.SetActive(false);
+        chestActivated = false;
+
+        if (toOpenUiName.Equals("Shop"))
         {
             ShopContainer.SetActive(true);
             shopActivated = true;
+        }
+        else if (toOpenUiName.Equals("Crafting"))
+        {
+            CraftingContainer.SetActive(true);
+            craftingActivated = true;
+        }
+        else
+        {
+            ChestContainer.SetActive(true);
+            chestActivated = true;
         }
     }
 
@@ -68,9 +81,11 @@ public class InventoryManager : MonoBehaviour
             InventoryMenu.SetActive(false);
             ChestContainer.SetActive(false);
             DescriptionContainer.SetActive(false);
+            CraftingContainer.SetActive(false);
             menuActivated = false;
             chestActivated = false;
             shopActivated = false;
+            craftingActivated = false;
         }
         else if (Input.GetButtonDown("Inventory"))
         {
@@ -78,13 +93,17 @@ public class InventoryManager : MonoBehaviour
             DescriptionContainer.SetActive(true);
             ChestContainer.SetActive(false);
             ShopContainer.SetActive(false);
+            CraftingContainer.SetActive(false);
             menuActivated = true;
+            chestActivated = false;
+            shopActivated = false;
+            craftingActivated = false;
         }
     }
 
     public void ShowDescription(Item item)
     {
-        if (item == null || chestActivated || shopActivated)
+        if (item == null || chestActivated || shopActivated || craftingActivated)
         {
             DescriptionContainer.SetActive(false);
             return;
@@ -92,6 +111,7 @@ public class InventoryManager : MonoBehaviour
 
         ChestContainer.SetActive(false);
         ShopContainer.SetActive(false);
+        CraftingContainer.SetActive(false);
         DescriptionContainer.SetActive(true);
         descriptionImg.sprite = item.icon;
         descriptionName.text = item.itemName;
