@@ -76,7 +76,7 @@ public class InventoryManager : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetButtonDown("Inventory") && menuActivated)
+        if ((Input.GetButtonDown("Inventory") || Input.GetKeyDown(KeyCode.Tab) || Input.GetKeyDown(KeyCode.Escape)) && menuActivated)
         {
             InventoryMenu.SetActive(false);
             ChestContainer.SetActive(false);
@@ -87,7 +87,7 @@ public class InventoryManager : MonoBehaviour
             shopActivated = false;
             craftingActivated = false;
         }
-        else if (Input.GetButtonDown("Inventory"))
+        else if (Input.GetButtonDown("Inventory") || Input.GetKeyDown(KeyCode.Tab))
         {
             InventoryMenu.SetActive(true);
             DescriptionContainer.SetActive(true);

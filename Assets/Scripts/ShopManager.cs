@@ -18,15 +18,10 @@ public class ShopManager : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
-            DontDestroyOnLoad(gameObject);
         }
         else if (Instance != this)
         {
-#if UNITY_EDITOR
-            DestroyImmediate(gameObject);
-#else
-        Destroy(gameObject);
-#endif
+            Destroy(gameObject);
         }
     }
 
