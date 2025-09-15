@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using TMPro; // for TextMeshProUGUI
 
@@ -5,21 +6,24 @@ public class HotbarManager : MonoBehaviour
 {
     public static HotbarManager Instance;
 
-    [SerializeField] private ItemSlot[] hotbarSlots;
+    [SerializeField] private List<ItemSlot> hotbarSlots; //all the slots which are used in hotbar
+
+    //Ui Text Variables
     [SerializeField] private TextMeshProUGUI healthText;
     [SerializeField] private TextMeshProUGUI armorText;
     [SerializeField] private TextMeshProUGUI weaponText;
 
-    private int selectedIndex = 0;
-    private int baseHealth = 100;
+    private int selectedIndex = 0; //currently selected slot
+    private int baseHealth = 100; //health of player
 
     void Awake()
     {
-        Instance = this;
+        Instance = this; //singleton pattern as it exist only one
     }
 
     void Start()
     {
+        //initial state of player
         SelectSlot(0);
         UpdateStatsUI();
     }
@@ -27,26 +31,27 @@ public class HotbarManager : MonoBehaviour
     void Update()
     {
         UpdateStatsUI();
-        for (int i = 0; i < hotbarSlots.Length; i++)
+        //numric keys to select slot
+        for (int i = 0; i < hotbarSlots.Count; i++)
         {
             if (Input.GetKeyDown(KeyCode.Alpha1 + i))
             {
                 SelectSlot(i);
             }
         }
-
+        //scroll to select slot
         float scroll = Input.GetAxis("Mouse ScrollWheel");
-        if (scroll > 0f) SelectSlot((selectedIndex + 1) % hotbarSlots.Length);
-        if (scroll < 0f) SelectSlot((selectedIndex - 1 + hotbarSlots.Length) % hotbarSlots.Length);
+        if (scroll > 0f) SelectSlot((selectedIndex + 1) % hotbarSlots.Count);
+        if (scroll < 0f) SelectSlot((selectedIndex - 1 + hotbarSlots.Count) % hotbarSlots.Count);
     }
 
     public void SelectSlot(int index)
     {
-        if (index < 0 || index >= hotbarSlots.Length) return;
+        //update the ui for selected item
+        if (index < 0 || index >= hotbarSlots.Count) return;
 
         selectedIndex = index;
-
-        for (int i = 0; i < hotbarSlots.Length; i++)
+        for (int i = 0; i < hotbarSlots.Count; i++)
         {
             hotbarSlots[i].selectedItem.SetActive(i == selectedIndex);
         }
@@ -58,6 +63,7 @@ public class HotbarManager : MonoBehaviour
 
     private void UpdateStatsUI()
     {
+        //for calulation of total armour points that user has equiped
         int armorCount = 0;
         foreach (var slot in hotbarSlots)
         {
@@ -66,6 +72,8 @@ public class HotbarManager : MonoBehaviour
                 armorCount++;
             }
         }
+
+        //updating ui utilities like health, armour and weapoin
 
         int armorValue = armorCount * 5;
 
@@ -79,7 +87,6 @@ public class HotbarManager : MonoBehaviour
         {
             weaponText.text = "Weapon: None";
         }
-
     }
 
     public Item GetSelectedItem()

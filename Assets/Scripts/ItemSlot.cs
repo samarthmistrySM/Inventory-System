@@ -2,6 +2,7 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using UnityEditor;
 
 public class ItemSlot : MonoBehaviour,
     IPointerClickHandler,
@@ -48,17 +49,20 @@ public class ItemSlot : MonoBehaviour,
 
     public int AddItem(Item _item, int _quantity)
     {
+        // add item to this slot
         if (_item == null || _quantity <= 0) return _quantity;
 
+        // if slot is empty, place new item
         if (item == null)
         {
             item = _item;
-            quantity = Mathf.Min(_quantity, _item.maxStack);
+            quantity = Mathf.Min(_quantity, _item.maxStack);  // it will not allow more than max stack
             isFull = (quantity >= _item.maxStack);
             UpdateUI();
-            return _quantity - quantity;
+            return _quantity - quantity; // return leftover
         }
 
+        // if same item and stackable → stack items
         if (item == _item && item.isStackable)
         {
             int spaceLeft = item.maxStack - quantity;
@@ -66,14 +70,15 @@ public class ItemSlot : MonoBehaviour,
             quantity += toAdd;
             isFull = (quantity >= item.maxStack);
             UpdateUI();
-            return _quantity - toAdd;
+            return _quantity - toAdd; // return leftover
         }
 
-        return _quantity;
+        return _quantity; // slot full or different item
     }
 
     public void UpdateUI()
     {
+        // update slot UI
         if (item != null)
         {
             itemImage.sprite = item.icon;
@@ -107,6 +112,7 @@ public class ItemSlot : MonoBehaviour,
 
     public void OnPointerClick(PointerEventData eventData)
     {
+        // handles right click
         if (eventData.button == PointerEventData.InputButton.Right)
             OnRightClick();
     }
@@ -118,6 +124,7 @@ public class ItemSlot : MonoBehaviour,
 
     public void OnPointerEnter(PointerEventData eventData)
     {
+        //hover enter on slot
         if (selectedItem != null)
             selectedItem.SetActive(true);
 
@@ -128,6 +135,7 @@ public class ItemSlot : MonoBehaviour,
 
     public void OnPointerExit(PointerEventData eventData)
     {
+        //hover exit on slot
         if (selectedItem != null)
             selectedItem.SetActive(false);
 
@@ -138,11 +146,13 @@ public class ItemSlot : MonoBehaviour,
 
     public void OnPointerDown(PointerEventData eventData)
     {
+        //start dragging item
         if (eventData.button != PointerEventData.InputButton.Left || item == null) return;
 
         isDragging = true;
         eventData.pointerDrag = gameObject;
 
+        //create dragging item icon
         draggedIcon = new GameObject("DraggedIcon");
         draggedIcon.transform.SetParent(canvas.transform, false);
         draggedIcon.transform.SetAsLastSibling();
@@ -158,12 +168,14 @@ public class ItemSlot : MonoBehaviour,
 
     public void OnDrag(PointerEventData eventData)
     {
+        //while dragging icon follows cursor
         if (isDragging && draggedRect != null)
             draggedRect.position = eventData.position;
     }
 
     public void OnPointerUp(PointerEventData eventData)
     {
+        //stop dragging
         if (!isDragging || eventData.button != PointerEventData.InputButton.Left) return;
 
         isDragging = false;
@@ -173,11 +185,13 @@ public class ItemSlot : MonoBehaviour,
 
     public void OnDrop(PointerEventData eventData)
     {
+        //when item is dropped on this slot
         if (eventData.pointerDrag == null) return;
 
         ItemSlot draggedSlot = eventData.pointerDrag.GetComponent<ItemSlot>();
         if (draggedSlot == null || draggedSlot == this) return;
 
+        //handle shop buying
         if (draggedSlot.slotType == SlotType.Shop && slotType == SlotType.Inventory)
         {
             if (ShopManager.Instance != null)
@@ -191,13 +205,14 @@ public class ItemSlot : MonoBehaviour,
             return;
         }
 
-        SwapItems(draggedSlot);
+        SwapItems(draggedSlot); //swap with other slot
     }
 
 
     private void SwapItems(ItemSlot other)
     {
-        if (item != null && other.item != null && item == other.item && item.isStackable)
+        //swap items between two slots
+        if (item != null && other.item != null && item == other.item && item.isStackable) //if same stackable item, merge stacks
         {
             int space = item.maxStack - quantity;
             if (space > 0)
@@ -217,6 +232,7 @@ public class ItemSlot : MonoBehaviour,
             return;
         }
 
+        //normal swap
         Item oldItem = item;
         int oldQty = quantity;
         bool oldFull = isFull;
